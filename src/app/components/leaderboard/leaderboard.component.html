@@ -1,0 +1,71 @@
+<div class="leaderboard-page">
+  <div class="page-container">
+    <div class="page-header">
+      <h1>🏆 Leaderboard</h1>
+      <p>See how you rank against other aspirants</p>
+    </div>
+
+    <!-- MY RANK CARD -->
+    <div class="my-rank-card" *ngIf="myEntry">
+      <div class="mr-rank">#{{ myEntry.rank }}</div>
+      <div class="mr-info">
+        <div class="mr-name">Your Rank</div>
+        <div class="mr-stats">{{ myEntry.totalExams }} exams · Total score: {{ myEntry.totalScore }} · Avg: {{ myEntry.avgScore }}</div>
+      </div>
+      <div class="mr-medal">{{ medal(myEntry.rank) }}</div>
+    </div>
+
+    <!-- TOP 3 PODIUM -->
+    <div class="podium" *ngIf="entries.length > 0">
+      <div class="podium-item second" *ngIf="entries[1]">
+        <div class="podium-avatar">{{ entries[1].user.name.charAt(0) | uppercase }}</div>
+        <div class="podium-medal">🥈</div>
+        <div class="podium-name">{{ entries[1].user.name }}</div>
+        <div class="podium-score">{{ entries[1].totalScore }} pts</div>
+        <div class="podium-bar" style="height: 70px;"></div>
+      </div>
+      <div class="podium-item first" *ngIf="entries[0]">
+        <div class="podium-avatar">{{ entries[0].user.name.charAt(0) | uppercase }}</div>
+        <div class="podium-medal">🥇</div>
+        <div class="podium-name">{{ entries[0].user.name }}</div>
+        <div class="podium-score">{{ entries[0].totalScore }} pts</div>
+        <div class="podium-bar" style="height: 100px;"></div>
+      </div>
+      <div class="podium-item third" *ngIf="entries[2]">
+        <div class="podium-avatar">{{ entries[2].user.name.charAt(0) | uppercase }}</div>
+        <div class="podium-medal">🥉</div>
+        <div class="podium-name">{{ entries[2].user.name }}</div>
+        <div class="podium-score">{{ entries[2].totalScore }} pts</div>
+        <div class="podium-bar" style="height: 50px;"></div>
+      </div>
+    </div>
+
+    <!-- FULL TABLE -->
+    <div class="leaderboard-table" *ngIf="entries.length > 0">
+      <div class="table-header">
+        <span>Rank</span>
+        <span>Name</span>
+        <span>Exams Taken</span>
+        <span>Avg Score</span>
+        <span>Total Score</span>
+      </div>
+      <div class="table-row" *ngFor="let e of entries" [class.highlight]="e.user.id === currentUserId">
+        <span class="rank-cell">{{ medal(e.rank) || '#' + e.rank }}</span>
+        <span class="name-cell">
+          <span class="mini-avatar">{{ e.user.name.charAt(0) | uppercase }}</span>
+          {{ e.user.name }}
+          <span class="you-tag" *ngIf="e.user.id === currentUserId">You</span>
+        </span>
+        <span>{{ e.totalExams }}</span>
+        <span>{{ e.avgScore }}</span>
+        <span class="score-cell">{{ e.totalScore }}</span>
+      </div>
+    </div>
+
+    <div class="empty-state" *ngIf="entries.length === 0">
+      <div class="empty-icon">🏆</div>
+      <p>No data yet. Be the first to take a test and claim the top spot!</p>
+      <a routerLink="/exams" class="start-link">Take a test →</a>
+    </div>
+  </div>
+</div>

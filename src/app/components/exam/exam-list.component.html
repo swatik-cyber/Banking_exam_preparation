@@ -1,0 +1,61 @@
+<div class="exam-list-page">
+  <div class="page-container">
+    <div class="page-header">
+      <h1>📋 Mock Tests & Practice Exams</h1>
+      <p>Choose your exam and start practicing. -0.25 marks for wrong answers (like the real exam!)</p>
+    </div>
+
+    <!-- FILTERS -->
+    <div class="filters">
+      <div class="filter-group">
+        <label>Difficulty:</label>
+        <div class="filter-btns">
+          <button *ngFor="let f of ['all','easy','medium','hard']"
+            [class.active]="activeFilter === f"
+            (click)="setFilter(f)">{{ f | titlecase }}</button>
+        </div>
+      </div>
+      <div class="filter-group">
+        <label>Type:</label>
+        <div class="filter-btns">
+          <button *ngFor="let t of ['all','mock','sectional']"
+            [class.active]="activeType === t"
+            (click)="setType(t)">{{ t | titlecase }}</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- EXAM CARDS -->
+    <div class="exam-grid">
+      <div class="exam-card" *ngFor="let e of filtered">
+        <div class="exam-card-top">
+          <div class="exam-icon">{{ getTypeIcon(e.type) }}</div>
+          <div class="exam-badges">
+            <span class="badge diff" [style.color]="getDiffColor(e.difficulty)" [style.border-color]="getDiffColor(e.difficulty)">
+              {{ e.difficulty | titlecase }}
+            </span>
+            <span class="badge type">{{ e.type | titlecase }}</span>
+          </div>
+        </div>
+        <h3 class="exam-title">{{ e.title }}</h3>
+        <p class="exam-desc">{{ e.description }}</p>
+
+        <div class="exam-meta-row">
+          <div class="meta-item"><span>⏱️</span> {{ e.duration }} min</div>
+          <div class="meta-item"><span>📝</span> {{ e.questions.length }} Questions</div>
+          <div class="meta-item"><span>🏆</span> {{ e.totalMarks }} Marks</div>
+        </div>
+
+        <div class="exam-sections">
+          <span class="section-tag" *ngFor="let s of e.sections">{{ s }}</span>
+        </div>
+
+        <a [routerLink]="['/exam', e.id]" class="start-btn">Start Exam →</a>
+      </div>
+    </div>
+
+    <div class="empty-state" *ngIf="filtered.length === 0">
+      <p>No exams found with this filter. Try a different combination.</p>
+    </div>
+  </div>
+</div>

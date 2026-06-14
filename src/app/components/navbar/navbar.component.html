@@ -1,0 +1,35 @@
+<nav class="navbar">
+  <div class="nav-container">
+    <a routerLink="/" class="nav-brand">
+      <span class="brand-icon">🏦</span>
+      <span class="brand-text">ExamEdge <span class="brand-tag">by Swatik</span></span>
+    </a>
+
+    <div class="nav-links" [class.open]="menuOpen">
+      <a routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{exact:true}" (click)="menuOpen=false">Home</a>
+      <ng-container *ngIf="auth.isLoggedIn">
+        <a routerLink="/dashboard" routerLinkActive="active" (click)="menuOpen=false">Dashboard</a>
+        <a routerLink="/exams" routerLinkActive="active" (click)="menuOpen=false">Mock Tests</a>
+        <a routerLink="/formulas" routerLinkActive="active" (click)="menuOpen=false">Formulas</a>
+        <a routerLink="/leaderboard" routerLinkActive="active" (click)="menuOpen=false">Leaderboard</a>
+      </ng-container>
+    </div>
+
+    <div class="nav-actions">
+      <ng-container *ngIf="auth.isLoggedIn; else notLoggedIn">
+        <span class="user-chip">
+          <span class="avatar">{{ auth.currentUser?.name?.charAt(0) | uppercase }}</span>
+          {{ auth.currentUser?.name }}
+        </span>
+        <button class="btn-logout" (click)="logout()">Logout</button>
+      </ng-container>
+      <ng-template #notLoggedIn>
+        <a routerLink="/login" class="btn-login">Login</a>
+        <a routerLink="/register" class="btn-register">Sign Up</a>
+      </ng-template>
+      <button class="hamburger" (click)="menuOpen = !menuOpen">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </div>
+</nav>

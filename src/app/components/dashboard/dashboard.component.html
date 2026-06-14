@@ -1,0 +1,134 @@
+<div class="dashboard">
+  <div class="dash-container">
+    <!-- HEADER -->
+    <div class="dash-header">
+      <div>
+        <h1>Welcome back, <span class="name-highlight">{{ auth.currentUser?.name }}</span>! 👋</h1>
+        <p>Ready to ace your banking exam today?</p>
+      </div>
+      <a routerLink="/exams" class="cta-btn">🚀 Start New Test</a>
+    </div>
+
+    <!-- STATS ROW -->
+    <div class="stats-grid">
+      <div class="stat-card blue">
+        <div class="stat-icon">📝</div>
+        <div class="stat-info">
+          <div class="stat-value">{{ auth.currentUser?.totalExams || 0 }}</div>
+          <div class="stat-label">Tests Taken</div>
+        </div>
+      </div>
+      <div class="stat-card purple">
+        <div class="stat-icon">✅</div>
+        <div class="stat-info">
+          <div class="stat-value">{{ totalCorrect }}</div>
+          <div class="stat-label">Correct Answers</div>
+        </div>
+      </div>
+      <div class="stat-card teal">
+        <div class="stat-icon">⭐</div>
+        <div class="stat-info">
+          <div class="stat-value">{{ avgScore }}</div>
+          <div class="stat-label">Avg Score</div>
+        </div>
+      </div>
+      <div class="stat-card gold">
+        <div class="stat-icon">🏆</div>
+        <div class="stat-info">
+          <div class="stat-value">{{ bestScore }}</div>
+          <div class="stat-label">Best Score</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="dash-grid">
+      <!-- RECENT ATTEMPTS -->
+      <div class="dash-section">
+        <div class="section-title">
+          <h2>📊 Recent Attempts</h2>
+          <a routerLink="/exams" class="see-all">View All Exams →</a>
+        </div>
+
+        <div *ngIf="attempts.length === 0" class="empty-state">
+          <div class="empty-icon">📋</div>
+          <p>You haven't taken any tests yet.</p>
+          <a routerLink="/exams" class="start-link">Take your first mock test →</a>
+        </div>
+
+        <div class="attempt-list" *ngIf="attempts.length > 0">
+          <div class="attempt-card" *ngFor="let a of attempts">
+            <div class="attempt-info">
+              <div class="attempt-title">{{ a.examTitle }}</div>
+              <div class="attempt-meta">
+                <span>{{ a.correctCount }}✅ {{ a.wrongCount }}❌ {{ a.unattempted }}⏭️</span>
+                <span class="time">⏱️ {{ formatTime(a.timeTaken) }}</span>
+              </div>
+            </div>
+            <div class="attempt-score" [class]="getScoreClass(getScorePct(a))">
+              {{ getScorePct(a) }}%
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- QUICK LINKS -->
+      <div class="dash-section">
+        <div class="section-title">
+          <h2>🎯 Quick Practice</h2>
+        </div>
+        <div class="quick-links">
+          <a routerLink="/exams" [queryParams]="{filter:'easy'}" class="quick-card easy">
+            <span class="qc-icon">🟢</span>
+            <div>
+              <strong>Easy Mode</strong>
+              <small>Build your foundation</small>
+            </div>
+          </a>
+          <a routerLink="/exams" [queryParams]="{filter:'medium'}" class="quick-card medium">
+            <span class="qc-icon">🟡</span>
+            <div>
+              <strong>Medium Mode</strong>
+              <small>Exam-level questions</small>
+            </div>
+          </a>
+          <a routerLink="/exams" [queryParams]="{filter:'hard'}" class="quick-card hard">
+            <span class="qc-icon">🔴</span>
+            <div>
+              <strong>Hard Mode</strong>
+              <small>Challenge yourself</small>
+            </div>
+          </a>
+          <a routerLink="/formulas" class="quick-card formula">
+            <span class="qc-icon">📐</span>
+            <div>
+              <strong>Formula Bank</strong>
+              <small>All important formulas</small>
+            </div>
+          </a>
+          <a routerLink="/leaderboard" class="quick-card leader">
+            <span class="qc-icon">🏆</span>
+            <div>
+              <strong>Leaderboard</strong>
+              <small>See your rank</small>
+            </div>
+          </a>
+        </div>
+
+        <!-- UPCOMING EXAMS PREVIEW -->
+        <div class="section-title" style="margin-top:1.5rem">
+          <h2>📅 Available Tests</h2>
+        </div>
+        <div class="exam-mini-list">
+          <a [routerLink]="['/exam', e.id]" class="exam-mini" *ngFor="let e of exams">
+            <div class="em-title">{{ e.title }}</div>
+            <div class="em-meta">
+              <span class="diff-badge" [style.color]="getDifficultyColor(e.difficulty)">{{ e.difficulty }}</span>
+              <span>⏱️ {{ e.duration }}min</span>
+              <span>📝 {{ e.questions.length }}Qs</span>
+            </div>
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

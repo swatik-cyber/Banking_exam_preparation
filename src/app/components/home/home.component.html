@@ -1,0 +1,101 @@
+<div class="home">
+  <!-- HERO -->
+  <section class="hero">
+    <div class="hero-bg">
+      <div class="hero-orb orb1"></div>
+      <div class="hero-orb orb2"></div>
+      <div class="hero-orb orb3"></div>
+    </div>
+    <div class="hero-content">
+      <div class="hero-badge">🎯 India's #1 Banking Exam Prep Platform</div>
+      <h1 class="hero-title">
+        Crack Your <span class="gradient-text">Banking Exam</span><br>
+        with Confidence
+      </h1>
+      <p class="hero-sub">
+        Complete preparation platform for SBI PO, IBPS, RBI & more. 
+        Mock tests, formulas & analytics — all in one place. <strong>Made by Swatik.</strong>
+      </p>
+      <div class="hero-cta">
+        <button class="btn-primary" (click)="getStarted()">
+          {{ auth.isLoggedIn ? '🚀 Start Practice' : '✨ Start Free Today' }}
+        </button>
+        <a routerLink="/formulas" class="btn-secondary">📐 View Formulas</a>
+      </div>
+      <div class="hero-stats">
+        <div class="stat-item" *ngFor="let s of stats">
+          <span class="stat-num">{{ s.number }}</span>
+          <span class="stat-label">{{ s.label }}</span>
+        </div>
+      </div>
+    </div>
+    <div class="hero-visual">
+      <div class="score-card">
+        <div class="score-header">📊 Your Performance</div>
+        <div class="score-ring">
+          <svg viewBox="0 0 100 100">
+            <circle cx="50" cy="50" r="40" fill="none" stroke="#1e293b" stroke-width="8"/>
+            <circle cx="50" cy="50" r="40" fill="none" stroke="#3b82f6" stroke-width="8"
+              stroke-dasharray="188 251" stroke-linecap="round" transform="rotate(-90 50 50)"/>
+          </svg>
+          <div class="score-num">75%</div>
+        </div>
+        <div class="score-breakdown">
+          <div class="sc-row"><span>Quant</span><div class="bar"><div style="width:80%;background:#3b82f6"></div></div></div>
+          <div class="sc-row"><span>Reasoning</span><div class="bar"><div style="width:72%;background:#8b5cf6"></div></div></div>
+          <div class="sc-row"><span>English</span><div class="bar"><div style="width:65%;background:#10b981"></div></div></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- EXAM CATEGORIES -->
+  <section class="section">
+    <div class="section-container">
+      <div class="section-header">
+        <h2>Prepare for <span class="gradient-text">Any Banking Exam</span></h2>
+        <p>Comprehensive coverage for all major competitive exams</p>
+      </div>
+      <div class="exam-grid">
+        <div class="exam-chip" *ngFor="let e of exams" [style.border-color]="e.color">
+          <span>{{ e.icon }}</span>
+          <span>{{ e.name }}</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FEATURES -->
+  <section class="section section-dark">
+    <div class="section-container">
+      <div class="section-header">
+        <h2>Everything You Need to <span class="gradient-text">Succeed</span></h2>
+        <p>Curated from R.S. Aggarwal's trusted textbooks</p>
+      </div>
+      <div class="features-grid">
+        <div class="feature-card" *ngFor="let f of features">
+          <div class="feature-icon">{{ f.icon }}</div>
+          <h3>{{ f.title }}</h3>
+          <p>{{ f.desc }}</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <section class="cta-section">
+    <div class="section-container">
+      <div class="cta-box">
+        <h2>Ready to Crack Your Exam?</h2>
+        <p>Join thousands of aspirants preparing smarter every day</p>
+        <button class="btn-primary btn-lg" (click)="getStarted()">
+          {{ auth.isLoggedIn ? 'Go to Dashboard →' : 'Create Free Account →' }}
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <footer class="footer">
+    <p>Made with ❤️ by <strong>Swatik</strong> · ExamEdge © 2024 · For Banking & Competitive Exam Aspirants</p>
+  </footer>
+</div>

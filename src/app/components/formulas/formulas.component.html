@@ -1,0 +1,51 @@
+<div class="formulas-page">
+  <div class="page-container">
+    <div class="page-header">
+      <h1>📐 Formula Bank</h1>
+      <p>All essential formulas for Quantitative Aptitude, Reasoning & English — curated from R.S. Aggarwal</p>
+    </div>
+
+    <div class="controls">
+      <input type="text" class="search-input" placeholder="🔍 Search formulas (e.g. 'profit', 'series', 'tense')..."
+        [(ngModel)]="searchTerm" (input)="applyFilter()" />
+
+      <div class="section-tabs">
+        <button [class.active]="activeSection==='all'" (click)="setSection('all')">All Subjects</button>
+        <button [class.active]="activeSection==='quant'" (click)="setSection('quant')">🔢 Quant</button>
+        <button [class.active]="activeSection==='reasoning'" (click)="setSection('reasoning')">🧩 Reasoning</button>
+        <button [class.active]="activeSection==='english'" (click)="setSection('english')">📖 English</button>
+      </div>
+    </div>
+
+    <div class="formula-grid">
+      <div class="formula-card" *ngFor="let f of filtered" [class.expanded]="expandedId === f.id" (click)="toggle(f.id)">
+        <div class="fc-header">
+          <span class="fc-icon" [style.background]="sectionColor(f.section) + '22'" [style.color]="sectionColor(f.section)">
+            {{ sectionIcon(f.section) }}
+          </span>
+          <div class="fc-titles">
+            <div class="fc-title">{{ f.title }}</div>
+            <div class="fc-topic">{{ f.topic }}</div>
+          </div>
+          <span class="fc-arrow">{{ expandedId === f.id ? '▲' : '▼' }}</span>
+        </div>
+
+        <div class="fc-formula">{{ f.formula }}</div>
+
+        <div class="fc-expand" *ngIf="expandedId === f.id">
+          <p class="fc-desc">{{ f.description }}</p>
+          <div class="fc-examples">
+            <strong>Examples:</strong>
+            <ul>
+              <li *ngFor="let ex of f.examples">{{ ex }}</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="empty-state" *ngIf="filtered.length === 0">
+      <p>No formulas found matching "{{ searchTerm }}". Try a different search term.</p>
+    </div>
+  </div>
+</div>

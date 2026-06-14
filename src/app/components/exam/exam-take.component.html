@@ -1,0 +1,101 @@
+<!-- START SCREEN -->
+<div class="start-screen" *ngIf="!started && exam">
+  <div class="start-card">
+    <div class="start-icon">📋</div>
+    <h1>{{ exam.title }}</h1>
+    <p class="exam-desc">{{ exam.description }}</p>
+    <div class="exam-info-grid">
+      <div class="info-item"><span class="info-label">⏱️ Duration</span><span class="info-val">{{ exam.duration }} Minutes</span></div>
+      <div class="info-item"><span class="info-label">📝 Questions</span><span class="info-val">{{ exam.questions.length }}</span></div>
+      <div class="info-item"><span class="info-label">🏆 Total Marks</span><span class="info-val">{{ exam.totalMarks }}</span></div>
+      <div class="info-item"><span class="info-label">📊 Difficulty</span><span class="info-val" style="text-transform:capitalize">{{ exam.difficulty }}</span></div>
+    </div>
+    <div class="rules-box">
+      <h3>📌 Exam Rules</h3>
+      <ul>
+        <li>✅ +1 mark for each correct answer</li>
+        <li>❌ -0.25 marks for each wrong answer</li>
+        <li>⏭️ No marks for unattempted questions</li>
+        <li>🚩 Flag questions for review</li>
+        <li>⏰ Timer auto-submits on time up</li>
+      </ul>
+    </div>
+    <button class="btn-start" (click)="startExam()">🚀 Start Exam</button>
+    <a routerLink="/exams" class="btn-back">← Back to Exams</a>
+  </div>
+</div>
+
+<!-- EXAM SCREEN -->
+<div class="exam-screen" *ngIf="started && exam">
+  <!-- HEADER -->
+  <div class="exam-header">
+    <div class="exam-header-left">
+      <span class="exam-name">{{ exam.title }}</span>
+      <div class="progress-bar"><div [style.width.%]="progress"></div></div>
+      <span class="progress-text">{{ currentIdx + 1 }}/{{ exam.questions.length }}</span>
+    </div>
+    <div class="timer" [style.color]="timerColor" [style.border-color]="timerColor">
+      ⏱️ {{ minutes | number:'2.0-0' }}:{{ seconds | number:'2.0-0' }}
+    </div>
+    <button class="btn-panel" (click)="showPanel = !showPanel">🗂️ Questions</button>
+    <button class="btn-submit-exam" (click)="submit()">Submit Exam</button>
+  </div>
+
+  <div class="exam-body">
+    <!-- QUESTION PANEL -->
+    <div class="question-main">
+      <div class="q-meta">
+        <span class="q-number">Q{{ currentIdx + 1 }}</span>
+        <span class="q-topic">{{ current.topic }}</span>
+        <span class="q-section">{{ current.section | titlecase }}</span>
+        <span class="q-diff" [class]="current.difficulty">{{ current.difficulty | titlecase }}</span>
+      </div>
+
+      <div class="q-text">{{ current.question }}</div>
+
+      <div class="options-list">
+        <div class="option" *ngFor="let opt of current.options; let i = index"
+          [class.selected]="answers[current.id] === i"
+          (click)="select(i)">
+          <span class="opt-letter">{{ ['A','B','C','D'][i] }}</span>
+          <span class="opt-text">{{ opt }}</span>
+        </div>
+      </div>
+
+      <div class="formula-hint" *ngIf="current.formula">
+        <span>💡 Formula Hint:</span> {{ current.formula }}
+      </div>
+
+      <div class="q-actions">
+        <button class="btn-flag" (click)="toggleFlag()" [class.flagged]="flagged.has(current.id)">
+          {{ flagged.has(current.id) ? '🚩 Flagged' : '🏳️ Flag' }}
+        </button>
+        <button class="btn-clear" (click)="clearAnswer()" *ngIf="answers[current.id] !== undefined">
+          🗑️ Clear
+        </button>
+        <button class="btn-prev" (click)="prev()" [disabled]="currentIdx === 0">← Prev</button>
+        <button class="btn-next" (click)="next()" [disabled]="currentIdx === exam.questions.length - 1">Next →</button>
+      </div>
+    </div>
+
+    <!-- SIDE PANEL -->
+    <div class="side-panel" [class.open]="showPanel">
+      <div class="panel-header">
+        <span>Question Navigator</span>
+        <div class="panel-stats">
+          <span class="leg answered">✅ {{ answeredCount }}</span>
+          <span class="leg flagged">🚩 {{ flagged.size }}</span>
+          <span class="leg unanswered">⬜ {{ exam.questions.length - answeredCount }}</span>
+        </div>
+      </div>
+      <div class="q-grid">
+        <button *ngFor="let q of exam.questions; let i = index"
+          class="q-dot"
+          [class.current]="i === currentIdx"
+          [class.answered]="answers[q.id] !== undefined"
+          [class.flagged]="flagged.has(q.id)"
+          (click)="go(i)">{{ i + 1 }}</button>
+      </div>
+    </div>
+  </div>
+</div>

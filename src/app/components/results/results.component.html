@@ -1,0 +1,118 @@
+<div class="results-page" *ngIf="attempt && exam">
+  <div class="results-container">
+    <!-- SCORE CARD -->
+    <div class="score-summary">
+      <div class="score-ring-wrap">
+        <svg viewBox="0 0 140 140" class="score-ring-svg">
+          <circle cx="70" cy="70" r="60" fill="none" stroke="#1e293b" stroke-width="10"/>
+          <circle cx="70" cy="70" r="60" fill="none" [attr.stroke]="gradeColor" stroke-width="10"
+            [attr.stroke-dasharray]="circumference" [attr.stroke-dashoffset]="dashOffset"
+            stroke-linecap="round" transform="rotate(-90 70 70)"/>
+        </svg>
+        <div class="score-ring-text">
+          <div class="score-pct">{{ percentage }}%</div>
+          <div class="score-grade" [style.color]="gradeColor">{{ grade }}</div>
+        </div>
+      </div>
+
+      <div class="score-details">
+        <h1>{{ attempt.examTitle }}</h1>
+        <div class="score-marks">
+          Score: <strong>{{ attempt.score }}</strong> / {{ attempt.totalMarks }}
+        </div>
+        <div class="result-stats">
+          <div class="rs-item correct">
+            <span class="rs-num">{{ attempt.correctCount }}</span>
+            <span class="rs-label">✅ Correct</span>
+          </div>
+          <div class="rs-item wrong">
+            <span class="rs-num">{{ attempt.wrongCount }}</span>
+            <span class="rs-label">❌ Wrong</span>
+          </div>
+          <div class="rs-item unattempted">
+            <span class="rs-num">{{ attempt.unattempted }}</span>
+            <span class="rs-label">⏭️ Skipped</span>
+          </div>
+          <div class="rs-item time">
+            <span class="rs-num">{{ formatTime(attempt.timeTaken) }}</span>
+            <span class="rs-label">⏱️ Time Taken</span>
+          </div>
+        </div>
+        <div class="result-actions">
+          <a routerLink="/dashboard" class="btn-secondary">📊 Dashboard</a>
+          <a routerLink="/exams" class="btn-primary">🔄 Take Another Test</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- SECTION-WISE ANALYSIS -->
+    <div class="section-analysis">
+      <h2>📈 Section-wise Performance</h2>
+      <div class="section-cards">
+        <div class="section-card" *ngFor="let s of sectionKeys">
+          <div class="sc-header">
+            <span>{{ sectionLabel(s) }}</span>
+            <span class="sc-pct">{{ sectionPct(s) }}%</span>
+          </div>
+          <div class="sc-bar">
+            <div class="sc-bar-fill" [style.width.%]="sectionPct(s)"
+              [style.background]="sectionPct(s) >= 70 ? '#10b981' : sectionPct(s) >= 40 ? '#f59e0b' : '#ef4444'"></div>
+          </div>
+          <div class="sc-meta">
+            {{ attempt.sectionWise[s].correct }} correct, 
+            {{ attempt.sectionWise[s].wrong }} wrong, 
+            {{ attempt.sectionWise[s].total }} total
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ANSWER REVIEW -->
+    <div class="review-section">
+      <div class="review-header">
+        <h2>📝 Answer Review</h2>
+        <button class="toggle-review" (click)="showReview = !showReview">
+          {{ showReview ? 'Hide Review ▲' : 'Show Review ▼' }}
+        </button>
+      </div>
+
+      <div *ngIf="showReview">
+        <div class="review-filters">
+          <button [class.active]="filterType === 'all'" (click)="filterType = 'all'">All ({{ exam.questions.length }})</button>
+          <button [class.active]="filterType === 'correct'" (click)="filterType = 'correct'">Correct ({{ attempt.correctCount }})</button>
+          <button [class.active]="filterType === 'wrong'" (click)="filterType = 'wrong'">Wrong ({{ attempt.wrongCount }})</button>
+          <button [class.active]="filterType === 'unattempted'" (click)="filterType = 'unattempted'">Skipped ({{ attempt.unattempted }})</button>
+        </div>
+
+        <div class="review-list">
+          <div class="review-card" *ngFor="let q of filteredQuestions; let i = index" [class]="qStatus(q)">
+            <div class="rc-header">
+              <span class="rc-num">Q{{ exam.questions.indexOf(q) + 1 }}</span>
+              <span class="rc-topic">{{ q.topic }}</span>
+              <span class="rc-status" [class]="qStatus(q)">
+                {{ qStatus(q) === 'correct' ? '✅ Correct' : qStatus(q) === 'wrong' ? '❌ Wrong' : '⏭️ Skipped' }}
+              </span>
+            </div>
+            <div class="rc-question">{{ q.question }}</div>
+            <div class="rc-options">
+              <div class="rc-option" *ngFor="let opt of q.options; let oi = index"
+                [class.correct-ans]="oi === q.correct"
+                [class.user-wrong]="oi === getUserAnswer(q) && oi !== q.correct">
+                <span class="opt-letter">{{ ['A','B','C','D'][oi] }}</span>
+                <span>{{ opt }}</span>
+                <span class="tag" *ngIf="oi === q.correct">✓ Correct Answer</span>
+                <span class="tag wrong-tag" *ngIf="oi === getUserAnswer(q) && oi !== q.correct">✗ Your Answer</span>
+              </div>
+            </div>
+            <div class="rc-explanation">
+              <strong>💡 Explanation:</strong> {{ q.explanation }}
+            </div>
+            <div class="rc-formula" *ngIf="q.formula">
+              <strong>📐 Formula:</strong> {{ q.formula }}
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
